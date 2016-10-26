@@ -53,13 +53,13 @@ INCLUDEDIR = ${PREFIX}/include
 
 CXX = ${XCODE_DEVELOPER}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
 CC = ${XCODE_DEVELOPER}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-CFLAGS = -isysroot ${IOS_SDK} -I${IOS_SDK}/usr/include -arch ${ARCH} -I${INCLUDEDIR} -fembed-bitcode -m${OS_TYPE}-version-min=${MIN_OS_VERSION}
-CXXFLAGS = -stdlib=libc++ -std=c++11 -isysroot ${IOS_SDK} -I${IOS_SDK}/usr/include -arch ${ARCH} -I${INCLUDEDIR} -fembed-bitcode -m${OS_TYPE}-version-min=${MIN_OS_VERSION}
-LDFLAGS = -stdlib=libc++ -isysroot ${IOS_SDK} -L${LIBDIR} -L${IOS_SDK}/usr/lib -arch ${ARCH} -m${OS_TYPE}-version-min=${MIN_OS_VERSION}
+CFLAGS = -isysroot ${IOS_SDK} -I${IOS_SDK}/usr/include -arch ${ARCH} -I${INCLUDEDIR} -fembed-bitcode -m${OS_TYPE}-version-min=${MIN_OS_VERSION} -g
+CXXFLAGS = -stdlib=libc++ -std=c++11 -isysroot ${IOS_SDK} -I${IOS_SDK}/usr/include -arch ${ARCH} -I${INCLUDEDIR} -fembed-bitcode -m${OS_TYPE}-version-min=${MIN_OS_VERSION} -g
+LDFLAGS = -stdlib=libc++ -isysroot ${IOS_SDK} -L${LIBDIR} -L${IOS_SDK}/usr/lib -arch ${ARCH} -m${OS_TYPE}-version-min=${MIN_OS_VERSION} -g
 
 arch: ${LIBDIR}/libspatialite.a
 
-${LIBDIR}/libspatialite.a: ${LIBDIR}/libproj.a ${LIBDIR}/libgeos.a ${LIBDIR}/libsqlite3.a ${CURDIR}/spatialite
+${LIBDIR}/libspatialite.a: ${LIBDIR}/libgeos.a ${LIBDIR}/libproj.a ${LIBDIR}/libsqlite3.a ${CURDIR}/spatialite
 	cd spatialite && env \
 	CXX=${CXX} \
 	CC=${CC} \
@@ -68,10 +68,10 @@ ${LIBDIR}/libspatialite.a: ${LIBDIR}/libproj.a ${LIBDIR}/libgeos.a ${LIBDIR}/lib
 	LDFLAGS="${LDFLAGS} -liconv -lgeos -lgeos_c -lc++" ./configure --host=${HOST} --disable-freexl --prefix=${PREFIX} --with-geosconfig=${BINDIR}/geos-config --disable-shared && make clean install-strip
 
 ${CURDIR}/spatialite:
-	curl http://www.gaia-gis.it/gaia-sins/libspatialite-sources/libspatialite-4.1.1.tar.gz > spatialite.tar.gz
+	curl http://www.gaia-gis.it/gaia-sins/libspatialite-4.4.0-RC0.tar.gz > spatialite.tar.gz
 	tar -xzf spatialite.tar.gz
 	rm spatialite.tar.gz
-	mv libspatialite-4.1.1 spatialite
+	mv libspatialite-4.4.0-RC0 spatialite
 	patch -Np0 < spatialite.patch
 
 
@@ -84,10 +84,10 @@ ${LIBDIR}/libproj.a: ${CURDIR}/proj
 	LDFLAGS="${LDFLAGS}" ./configure --host=${HOST} --prefix=${PREFIX} --disable-shared && make clean install
 
 ${CURDIR}/proj:
-	curl http://download.osgeo.org/proj/proj-4.8.0.tar.gz > proj.tar.gz
+	curl http://download.osgeo.org/proj/proj-4.9.3.tar.gz > proj.tar.gz
 	tar -xzf proj.tar.gz
 	rm proj.tar.gz
-	mv proj-4.8.0 proj
+	mv proj-4.9.3 proj
 	patch -Np0 < proj.patch
 
 
@@ -100,10 +100,10 @@ ${LIBDIR}/libgeos.a: ${CURDIR}/geos
 	LDFLAGS="${LDFLAGS}" ./configure --host=${HOST} --prefix=${PREFIX} --disable-shared && make clean install
 
 ${CURDIR}/geos:
-	curl http://download.osgeo.org/geos/geos-3.4.2.tar.bz2 > geos.tar.bz2
+	curl http://download.osgeo.org/geos/geos-3.5.0.tar.bz2 > geos.tar.bz2
 	tar -xzf geos.tar.bz2
 	rm geos.tar.bz2
-	mv geos-3.4.2 geos
+	mv geos-3.5.0 geos
 	patch -Np0 < geos.patch
 
 
@@ -117,10 +117,11 @@ ${LIBDIR}/libsqlite3.a: ${CURDIR}/sqlite3
 	./configure --host=${HOST} --prefix=${PREFIX} --disable-shared --enable-static && make clean install
 
 ${CURDIR}/sqlite3:
-	curl http://sqlite.org/2013/sqlite-autoconf-3080100.tar.gz > sqlite3.tar.gz
+	curl https://sqlite.org/2016/sqlite-autoconf-3150000.tar.gz > sqlite3.tar.gz
 	tar xzvf sqlite3.tar.gz
 	rm sqlite3.tar.gz
-	mv sqlite-autoconf-3080100 sqlite3
+	mv sqlite-autoconf-3150000 sqlite3
+	patch -Np0 < sqlite3.patch
 	touch sqlite3
 
 clean:
