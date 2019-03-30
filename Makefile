@@ -68,7 +68,7 @@ LDFLAGS = -stdlib=libc++ -isysroot ${SDK} -L${LIBDIR} -L${SDK}/usr/lib -arch ${A
 
 arch: ${LIBDIR}/libspatialite.a
 
-${LIBDIR}/libspatialite.a: ${LIBDIR}/libproj.a ${LIBDIR}/libgeos.a ${CURDIR}/spatialite
+${LIBDIR}/libspatialite.a: ${LIBDIR}/libproj.a ${LIBDIR}/libgeos.a ${LIBDIR}/libsqlite3.a ${CURDIR}/spatialite
 	cd spatialite && env \
 	CXX=${CXX} \
 	CC=${CC} \
@@ -133,4 +133,4 @@ ${CURDIR}/sqlite3:
 	touch sqlite3
 
 clean:
-	rm -rf build geos proj spatialite include lib
+	rm -rf build geos proj spatialite sqlite3 include lib
