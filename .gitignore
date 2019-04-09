@@ -23,3 +23,6 @@ geos
 proj
 spatialite
 sqlite3
+
+# Ignore macOS attributes files
+.DS_Store

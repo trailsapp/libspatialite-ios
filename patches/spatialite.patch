@@ -6,10 +6,34 @@ diff -rupN spatialite/src/gaiaaux/gg_utf8.c spatialite-ios/src/gaiaaux/gg_utf8.c
  #if defined(__APPLE__) || defined(__ANDROID__)
  #include <iconv.h>
 -#include <localcharset.h>
-+//#include <localcharset.h>
++#include <langinfo.h>
  #else /* neither Mac OsX nor Android */
  #include <iconv.h>
  #include <langinfo.h>
+@@ -85,15 +85,15 @@ GAIAAUX_DECLARE const char *
+ gaiaGetLocaleCharset ()
+ {
+ /* identifies the locale charset */
+-#if defined(__MINGW32__) || defined(_WIN32)
+-    return locale_charset ();
+-#else /* not MINGW32 - WIN32 */
+-#if defined(__APPLE__) || defined(__ANDROID__)
+-    return locale_charset ();
+-#else /* neither Mac OsX nor Android */
++// #if defined(__MINGW32__) || defined(_WIN32)
++//     return locale_charset ();
++// #else /* not MINGW32 - WIN32 */
++// #if defined(__APPLE__) || defined(__ANDROID__)
++//     return locale_charset ();
++// #else /* neither Mac OsX nor Android */
+     return nl_langinfo (CODESET);
+-#endif
+-#endif
++// #endif
++// #endif
+ }
+ 
+ GAIAAUX_DECLARE int
 diff -rupN spatialite/src/gaiageo/gg_shape.c spatialite-ios/src/gaiageo/gg_shape.c
 --- spatialite/src/gaiageo/gg_shape.c	2012-11-25 12:47:00.000000000 +0100
 +++ spatialite-ios/src/gaiageo/gg_shape.c	2013-02-20 16:59:01.000000000 +0100
